@@ -1,0 +1,46 @@
+package com.anasxxd.videogameshop.products.dto;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+public class ProductResponse {
+
+    private Long id;
+    private String type;
+    private String name;
+    private String developer;
+    private String company;
+    private LocalDate releaseDate;
+    private String platform;
+    private Integer stock;
+    private BigDecimal price;
+
+    public ProductResponse() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getDeveloper() { return developer; }
+    public void setDeveloper(String developer) { this.developer = developer; }
+
+    public String getCompany() { return company; }
+    public void setCompany(String company) { this.company = company; }
+
+    public LocalDate getReleaseDate() { return releaseDate; }
+    public void setReleaseDate(LocalDate releaseDate) { this.releaseDate = releaseDate; }
+
+    public String getPlatform() { return platform; }
+    public void setPlatform(String platform) { this.platform = platform; }
+
+    public Integer getStock() { return stock; }
+    public void setStock(Integer stock) { this.stock = stock; }
+
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
+}

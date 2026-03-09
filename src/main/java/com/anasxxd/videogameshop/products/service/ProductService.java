@@ -1,8 +1,15 @@
 package com.anasxxd.videogameshop.products.service;
 
 import com.anasxxd.videogameshop.products.Product;
+import com.anasxxd.videogameshop.products.ProductType;
+import com.anasxxd.videogameshop.products.dto.CreateProductRequest;
+import com.anasxxd.videogameshop.products.dto.ProductResponse;
 import com.anasxxd.videogameshop.products.repo.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -18,12 +25,37 @@ public class ProductService {
         return productRepository.listAll();
     }
 
-    public Product create(Product p) {
-        validateProduct(p);
+    @Transactional
+    public ProductResponse create(CreateProductRequest request) {
+        ProductType type = ProductType.valueOf(request.getType());
+        String name = request.getName();
+        String dev = request.getDeveloper();
+        String comp = request.getCompany();
+        LocalDate date = request.getReleaseDate();
+        String platform = request.getPlatform();
+        Integer stock = request.getStock();
+        BigDecimal price = request.getPrice();
 
-        long newId = productRepository.insert(p);
-        p.setProductId(newId);
-        return p;
+        Product product = new Product(null, type, name, dev, comp, date, platform, stock, price);
+        validateProduct(product);
+
+        long newId = productRepository.insert(product);
+        product.setProductId(newId);
+
+        ProductResponse response = new ProductResponse();
+
+        response.setId(product.getProductId());
+        response.setType(product.getType().name());
+        response.setName(product.getName());
+        response.setDeveloper(product.getDeveloper());
+        response.setCompany(product.getCompany());
+        response.setReleaseDate(product.getReleaseDate());
+        response.setPlatform(product.getPlatform());
+
+        response.setStock(product.getStock());
+        response.setPrice(product.getPrice());
+
+        return response;
     }
 
     private void validateProduct(Product p) {
@@ -43,7 +75,7 @@ public class ProductService {
             throw new IllegalArgumentException("Product release date is required");
         }
 
-        if (p.getPrice() == null || p.getPrice() < 0){
+        if (p.getPrice() == null || p.getPrice().intValue() < 0){
             throw new IllegalArgumentException("Product price is required >= 0");
         }
 

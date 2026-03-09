@@ -5,6 +5,8 @@ import com.anasxxd.videogameshop.products.ProductType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class ProductRepository {
         LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
         String platform = rs.getString("platform");
         int stock = rs.getInt("stock");
-        double price = rs.getDouble("price");
+        BigDecimal price = rs.getBigDecimal("price");
 
         return new Product(id, type, name, developer, company, releaseDate, platform, stock, price);
     };

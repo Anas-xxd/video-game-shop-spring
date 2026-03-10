@@ -22,7 +22,7 @@ public class ProductRepository {
     private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> {
 
         long id = rs.getLong("product_id");
-        ProductType type = ProductType.valueOf(rs.getString("type"));
+        ProductType type = ProductType.valueOf(rs.getString("type").toUpperCase());
         String name = rs.getString("product_name");
         String developer = rs.getString("developer");
         String company = rs.getString("company");

@@ -5,6 +5,7 @@ import com.anasxxd.videogameshop.products.ProductType;
 import com.anasxxd.videogameshop.products.dto.CreateProductRequest;
 import com.anasxxd.videogameshop.products.dto.ProductResponse;
 import com.anasxxd.videogameshop.products.repo.ProductRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +28,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(CreateProductRequest request) {
-        ProductType type = ProductType.valueOf(request.getType());
+        ProductType type = ProductType.valueOf(request.getType().toUpperCase());
         String name = request.getName();
         String dev = request.getDeveloper();
         String comp = request.getCompany();
@@ -42,6 +43,10 @@ public class ProductService {
         long newId = productRepository.insert(product);
         product.setProductId(newId);
 
+        return getProductResponse(product);
+    }
+
+    private static @NonNull ProductResponse getProductResponse(Product product) {
         ProductResponse response = new ProductResponse();
 
         response.setId(product.getProductId());
@@ -51,7 +56,6 @@ public class ProductService {
         response.setCompany(product.getCompany());
         response.setReleaseDate(product.getReleaseDate());
         response.setPlatform(product.getPlatform());
-
         response.setStock(product.getStock());
         response.setPrice(product.getPrice());
 
@@ -75,7 +79,7 @@ public class ProductService {
             throw new IllegalArgumentException("Product release date is required");
         }
 
-        if (p.getPrice() == null || p.getPrice().intValue() < 0){
+        if (p.getPrice() == null || p.getPrice().compareTo(BigDecimal.ZERO) < 0){
             throw new IllegalArgumentException("Product price is required >= 0");
         }
 

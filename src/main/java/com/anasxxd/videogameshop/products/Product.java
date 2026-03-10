@@ -86,7 +86,7 @@ public class Product {
         return price;
     }
     public void setPrice(BigDecimal price) {
-        if (price.intValue() < 0) {
+        if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
         }
         this.price = price;

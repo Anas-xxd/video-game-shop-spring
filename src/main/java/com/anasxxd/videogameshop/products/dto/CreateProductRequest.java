@@ -2,16 +2,32 @@ package com.anasxxd.videogameshop.products.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import jakarta.validation.constraints.*;
 
-    public class CreateProductRequest {
+public class CreateProductRequest {
 
+        @NotNull @NotBlank
         private String type;
+
+        @NotNull @NotBlank
         private String name;
+
+        @NotBlank
         private String developer;
+
+        @NotNull @NotBlank
         private String company;
+
+        @NotNull @NotBlank
         private LocalDate releaseDate;
+
+        @NotBlank
         private String platform;
+
+        @PositiveOrZero
         private Integer stock;
+
+        @NotNull @PositiveOrZero
         private BigDecimal price;
 
         public CreateProductRequest() {}

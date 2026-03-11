@@ -14,7 +14,8 @@ public class Product {
     private Integer stock;
     private BigDecimal price;
 
-    public Product(Long productId, ProductType type, String name, String developer, String company, LocalDate releaseDate, String platform, Integer stock, BigDecimal price) {
+    public Product(Long productId, ProductType type, String name, String developer, String company,
+                   LocalDate releaseDate, String platform, Integer stock, BigDecimal price) {
         this.productId = productId;
         this.type = type;
         this.name = name;
@@ -26,20 +27,22 @@ public class Product {
         this.price = price;
     }
 
-    public Long getProductId(){
+    public Long getProductId() {
         return productId;
     }
+
     public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public ProductType getType(){
+    public ProductType getType() {
         return type;
     }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -47,6 +50,7 @@ public class Product {
     public String getDeveloper() {
         return developer;
     }
+
     public void setDeveloper(String developer) {
         this.developer = developer;
     }
@@ -54,6 +58,7 @@ public class Product {
     public String getCompany() {
         return company;
     }
+
     public void setCompany(String company) {
         this.company = company;
     }
@@ -61,6 +66,7 @@ public class Product {
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
+
     public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
@@ -68,6 +74,7 @@ public class Product {
     public String getPlatform() {
         return platform;
     }
+
     public void setPlatform(String platform) {
         this.platform = platform;
     }
@@ -75,6 +82,7 @@ public class Product {
     public Integer getStock() {
         return stock;
     }
+
     public void setStock(Integer stock) {
         if (stock < 0) {
             throw new IllegalArgumentException("Stock cannot be negative!");
@@ -85,6 +93,7 @@ public class Product {
     public BigDecimal getPrice() {
         return price;
     }
+
     public void setPrice(BigDecimal price) {
         if (price.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Price cannot be negative");
@@ -102,6 +111,7 @@ public class Product {
                         Platforms: %s
                         Stock: %s
                         Price: $%.2f""",
-                getType(), getName(), getDeveloper(), getCompany(), getReleaseDate(), getPlatform(), getStock(), getPrice());
+                getType(), getName(), getDeveloper(), getCompany(),
+                getReleaseDate(), getPlatform(), getStock(), getPrice());
     }
 }

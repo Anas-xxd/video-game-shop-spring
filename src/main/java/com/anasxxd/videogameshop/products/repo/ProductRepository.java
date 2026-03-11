@@ -2,6 +2,7 @@ package com.anasxxd.videogameshop.products.repo;
 
 import com.anasxxd.videogameshop.products.Product;
 import com.anasxxd.videogameshop.products.ProductType;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -35,18 +36,21 @@ public class ProductRepository {
     };
 
     public List<Product> listAll() {
-        String sql = "SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price FROM products";
+        String sql = """
+                SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price
+                FROM products
+                """;
+
         return jdbc.query(sql, PRODUCT_ROW_MAPPER);
     }
 
     public long insert(Product p) {
         String sql = """
-        INSERT INTO products (type, product_name, developer, company, release_date, platform, stock, price)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """;
+                INSERT INTO products (type, product_name, developer, company, release_date, platform, stock, price)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
 
         jdbc.update(sql,
-
                 p.getType().name(),
                 p.getName(),
                 p.getDeveloper(),
@@ -56,6 +60,7 @@ public class ProductRepository {
                 p.getStock(),
                 p.getPrice()
         );
+
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
     }
 }

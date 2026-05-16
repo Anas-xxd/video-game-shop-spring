@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,8 +23,12 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> listAll() {
-        return productRepository.listAll();
+    public List<ProductResponse> listAll() {
+        List<ProductResponse> products = new ArrayList<>();
+        for (Product product : productRepository.listAll()){
+            products.add(getProductResponse(product));
+        }
+        return products;
     }
 
     @Transactional

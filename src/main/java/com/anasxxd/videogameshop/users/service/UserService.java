@@ -25,7 +25,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse creat(CreateUserRequest request) {
+    public UserResponse create(CreateUserRequest request) {
         UserRole role = request.getRole();
         String loginName = request.getLoginKey();
         String name = request.getName();
@@ -48,7 +48,6 @@ public class UserService {
         response.setUserRole(user.getRole().name());
         response.setLoginKey(user.getLoginKey());
         response.setName(user.getName());
-        response.setPassword(user.getPassword());
         response.setEmail(user.getEmail());
 
         return response;

@@ -27,6 +27,6 @@ public class UserController {
 
     @PostMapping("/users")
     public UserResponse creatUser(@Valid @RequestBody CreateUserRequest request) {
-        return userService.creat(request);
+        return userService.create(request);
     }
 }

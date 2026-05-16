@@ -7,7 +7,6 @@ import jakarta.validation.constraints.NotNull;
 public class CreateUserRequest {
 
     @NotNull
-    @NotBlank
     private UserRole userRole;
 
     @NotNull

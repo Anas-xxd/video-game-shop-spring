@@ -29,7 +29,10 @@ public class ProductRepository {
         String company = rs.getString("company");
         LocalDate releaseDate = rs.getDate("release_date").toLocalDate();
         String platform = rs.getString("platform");
-        int stock = rs.getInt("stock");
+        Integer stock = rs.getInt("stock");
+        if (rs.wasNull()) {
+            stock = null;
+        }
         BigDecimal price = rs.getBigDecimal("price");
 
         return new Product(id, type, name, developer, company, releaseDate, platform, stock, price);

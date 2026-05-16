@@ -25,7 +25,6 @@ public class CreateProductRequest {
     private String company;
 
     @NotNull
-    @NotBlank
     private LocalDate releaseDate;
 
     @NotBlank

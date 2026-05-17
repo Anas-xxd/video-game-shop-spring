@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -38,6 +39,21 @@ public class UserRepository {
         return jdbc.query(sql, USER_ROW_MAPPER);
     }
 
+    public Optional<User> findUser(Long id){
+        String sql = """
+                SELECT user_id, user_role, login_key, user_name, email, password_hash
+                FROM users WHERE user_id = ?
+                """;
+
+        List<User> users = jdbc.query(sql, USER_ROW_MAPPER, id);
+
+        if (users.isEmpty()){
+            return Optional.empty();
+        }
+
+        return Optional.of(users.get(0));
+    }
+
     public Long insert(User u) {
         String sql = """
                 INSERT INTO users(user_role, login_key, user_name, email, password_hash)
@@ -53,5 +69,28 @@ public class UserRepository {
         );
 
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    public void update(User user){
+        String sql = """
+                UPDATE users
+                SET login_key = ?, user_name = ?, email = ?, password_hash = ?
+                WHERE user_id = ?
+                """;
+
+        jdbc.update(sql,
+                user.getLoginKey(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getUserID()
+        );
+    }
+
+    public void delete(Long id){
+        String sql = """
+                DELETE FROM users WHERE user_id = ?
+                """;
+        jdbc.update(sql, id);
     }
 }

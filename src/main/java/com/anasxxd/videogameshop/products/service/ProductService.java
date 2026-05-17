@@ -4,6 +4,7 @@ import com.anasxxd.videogameshop.products.Product;
 import com.anasxxd.videogameshop.products.ProductType;
 import com.anasxxd.videogameshop.products.dto.CreateProductRequest;
 import com.anasxxd.videogameshop.products.dto.ProductResponse;
+import com.anasxxd.videogameshop.products.dto.UpdateProductRequest;
 import com.anasxxd.videogameshop.products.repo.ProductRepository;
 
 import org.jspecify.annotations.NonNull;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -29,6 +31,10 @@ public class ProductService {
             products.add(getProductResponse(product));
         }
         return products;
+    }
+
+    public ProductResponse getById(Long id){
+        return getProductResponse(findProductOrThrow(id));
     }
 
     @Transactional
@@ -65,6 +71,57 @@ public class ProductService {
         response.setPrice(product.getPrice());
 
         return response;
+    }
+
+    public ProductResponse update(Long id, UpdateProductRequest request){
+        Product product = findProductOrThrow(id);
+
+        if (request.getName() != null){
+            product.setName(request.getName());
+        }
+
+        if (request.getDeveloper() != null){
+            product.setDeveloper(request.getDeveloper());
+        }
+
+        if (request.getCompany() != null){
+            product.setCompany(request.getCompany());
+        }
+
+        if (request.getReleaseDate() != null){
+            product.setReleaseDate(request.getReleaseDate());
+        }
+
+        if (request.getPlatform() != null){
+            product.setPlatform(request.getPlatform());
+        }
+
+        if (request.getStock() != null){
+            product.setStock(request.getStock());
+        }
+
+        if (request.getPrice() != null){
+            product.setPrice(request.getPrice());
+        }
+
+        validateProduct(product);
+        productRepository.update(product);
+        return getProductResponse(product);
+    }
+
+    private Product findProductOrThrow(Long id){
+        Optional<Product> optionalProduct = productRepository.findById(id);
+
+        if (optionalProduct.isPresent()){
+            return optionalProduct.get();
+        }
+
+        throw new IllegalArgumentException("The product with the id: " + id + " does not exist");
+    }
+
+    public void delete(Long id){
+        findProductOrThrow(id);
+        productRepository.delete(id);
     }
 
     private void validateProduct(Product p) {

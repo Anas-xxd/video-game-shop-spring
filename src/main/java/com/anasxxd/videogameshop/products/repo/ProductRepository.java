@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ProductRepository {
@@ -65,5 +66,47 @@ public class ProductRepository {
         );
 
         return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    public void update(Product p){
+        String sql = """
+                UPDATE products
+                SET product_name = ?, developer = ?, company = ?,
+                release_date = ?, platform = ?, price = ?, stock = ?
+                WHERE product_id = ?
+                """;
+
+        jdbc.update(sql,
+                p.getName(),
+                p.getDeveloper(),
+                p.getCompany(),
+                p.getReleaseDate(),
+                p.getPlatform(),
+                p.getPrice(),
+                p.getStock(),
+                p.getProductId()
+        );
+    }
+
+    public void delete(Long id){
+        String sql = """
+                DELETE FROM products WHERE product_id = ?
+                """;
+        jdbc.update(sql, id);
+    }
+
+    public Optional<Product> findById(Long id){
+        String sql = """
+                SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price
+                FROM products WHERE product_id = ?
+                """;
+
+        List<Product> products = jdbc.query(sql, PRODUCT_ROW_MAPPER, id);
+
+        if(products.isEmpty()){
+            return Optional.empty();
+        }
+
+        return Optional.of(products.get(0));
     }
 }

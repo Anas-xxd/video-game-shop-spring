@@ -3,6 +3,7 @@ package com.anasxxd.videogameshop.users.service;
 import com.anasxxd.videogameshop.users.User;
 import com.anasxxd.videogameshop.users.UserRole;
 import com.anasxxd.videogameshop.users.dto.CreateUserRequest;
+import com.anasxxd.videogameshop.users.dto.UpdateUserRequest;
 import com.anasxxd.videogameshop.users.dto.UserResponse;
 import com.anasxxd.videogameshop.users.repo.UserRepository;
 
@@ -10,7 +11,9 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -20,11 +23,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> listUsers() {
-        return userRepository.listAllUsers();
+    public List<UserResponse> listUsers() {
+        List<UserResponse> users = new ArrayList<>();
+
+        for (User user : userRepository.listAllUsers()){
+            users.add(getUserResponse(user));
+        }
+
+        return users;
     }
 
-    @Transactional
+    public UserResponse getUserById(Long id){
+        return getUserResponse(findUserOrThrow(id));
+    }
+
     public UserResponse create(CreateUserRequest request) {
         UserRole role = request.getRole();
         String loginName = request.getLoginKey();
@@ -53,21 +65,60 @@ public class UserService {
         return response;
     }
 
+    public UserResponse update(Long id, UpdateUserRequest request){
+        User user = findUserOrThrow(id);
+
+        if (request.getLoginKey() != null){
+            user.setLoginKey(request.getLoginKey());
+        }
+
+        if (request.getName() != null){
+            user.setName(request.getName());
+        }
+
+        if (request.getPassword() != null){
+            user.setPassword(request.getPassword());
+        }
+
+        if (request.getEmail() != null){
+            user.setEmail(request.getEmail());
+        }
+
+        userValidate(user);
+        userRepository.update(user);
+        return getUserResponse(user);
+    }
+
+    public void delete(Long id){
+        findUserOrThrow(id);
+        userRepository.delete(id);
+    }
+
+    private User findUserOrThrow(Long id){
+        Optional<User> optionalUser = userRepository.findUser(id);
+
+        if (optionalUser.isPresent()){
+            return optionalUser.get();
+        }
+
+        throw new IllegalArgumentException("The user with the id: " + id + " does not exist.");
+    }
+
     private void userValidate(User u) {
         if (u.getRole() == null) {
-            throw new IllegalArgumentException("Product type is required");
+            throw new IllegalArgumentException("User type is required");
         }
 
         if (u.getLoginKey() == null || u.getLoginKey().isBlank()) {
-            throw new IllegalArgumentException("Product company is required");
+            throw new IllegalArgumentException("User company is required");
         }
 
         if (u.getName() == null || u.getName().isBlank()) {
-            throw new IllegalArgumentException("Product name is required");
+            throw new IllegalArgumentException("User name is required");
         }
 
         if (u.getPassword() == null || u.getPassword().isBlank()) {
-            throw new IllegalArgumentException("Product company is required");
+            throw new IllegalArgumentException("User company is required");
         }
 
         switch (u.getRole()) {
@@ -77,11 +128,11 @@ public class UserService {
 
             case CUSTOMER -> {
                 if (u.getEmail() == null || u.getEmail().isBlank()) {
-                    throw new IllegalArgumentException("Product company is required");
+                    throw new IllegalArgumentException("User company is required");
                 }
             }
 
-            default -> throw new IllegalArgumentException("Unknown product type: " + u.getRole());
+            default -> throw new IllegalArgumentException("Unknown User type: " + u.getRole());
         }
     }
 }

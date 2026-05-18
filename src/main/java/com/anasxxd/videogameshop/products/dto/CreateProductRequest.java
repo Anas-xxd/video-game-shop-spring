@@ -17,7 +17,6 @@ public class CreateProductRequest {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String developer;
 
     @NotNull
@@ -27,7 +26,6 @@ public class CreateProductRequest {
     @NotNull
     private LocalDate releaseDate;
 
-    @NotBlank
     private String platform;
 
     @PositiveOrZero

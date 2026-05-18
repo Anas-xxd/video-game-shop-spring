@@ -21,17 +21,16 @@ public class CreateUserRequest {
     @NotBlank
     private String password;
 
-    @NotBlank
     private String email;
 
     public CreateUserRequest() {
     }
 
-    public UserRole getRole() {
+    public UserRole getUserRole() {
         return userRole;
     }
 
-    public void setRole(UserRole userRole) {
+    public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
     }
 

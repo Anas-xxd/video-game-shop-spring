@@ -1,13 +1,10 @@
-package com.anasxxd.videogameshop.cart;
+package com.anasxxd.videogameshop.cart.dto;
 
-public class CartItem {
+public class CartItemResponse {
     private long productId;
     private int quantity;
 
-    public CartItem(long productId, int quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
-    }
+    public CartItemResponse() {}
 
     public void setProductId(long productId) {
         this.productId = productId;

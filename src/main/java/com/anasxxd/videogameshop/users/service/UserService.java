@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public UserResponse create(CreateUserRequest request) {
-        UserRole role = request.getRole();
+        UserRole role = request.getUserRole();
         String loginName = request.getLoginKey();
         String name = request.getName();
         String password = request.getPassword();
@@ -106,11 +106,11 @@ public class UserService {
 
     private void userValidate(User u) {
         if (u.getRole() == null) {
-            throw new IllegalArgumentException("User type is required");
+            throw new IllegalArgumentException("User role is required");
         }
 
         if (u.getLoginKey() == null || u.getLoginKey().isBlank()) {
-            throw new IllegalArgumentException("User company is required");
+            throw new IllegalArgumentException("User login key is required");
         }
 
         if (u.getName() == null || u.getName().isBlank()) {
@@ -118,7 +118,7 @@ public class UserService {
         }
 
         if (u.getPassword() == null || u.getPassword().isBlank()) {
-            throw new IllegalArgumentException("User company is required");
+            throw new IllegalArgumentException("User password is required");
         }
 
         switch (u.getRole()) {
@@ -128,7 +128,7 @@ public class UserService {
 
             case CUSTOMER -> {
                 if (u.getEmail() == null || u.getEmail().isBlank()) {
-                    throw new IllegalArgumentException("User company is required");
+                    throw new IllegalArgumentException("User email is required");
                 }
             }
 

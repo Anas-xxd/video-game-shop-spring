@@ -19,7 +19,6 @@ public class UserRepository {
     }
 
     private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> {
-
         Long id = rs.getLong("user_id");
         UserRole userRole = UserRole.valueOf(rs.getString("user_role"));
         String key = rs.getString("login_key");
@@ -42,7 +41,8 @@ public class UserRepository {
     public Optional<User> findUser(Long id){
         String sql = """
                 SELECT user_id, user_role, login_key, user_name, email, password_hash
-                FROM users WHERE user_id = ?
+                FROM users 
+                WHERE user_id = ?
                 """;
 
         List<User> users = jdbc.query(sql, USER_ROW_MAPPER, id);

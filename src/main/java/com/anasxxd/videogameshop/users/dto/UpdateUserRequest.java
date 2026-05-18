@@ -6,8 +6,7 @@ public class UpdateUserRequest {
     private String password;
     private String email;
 
-    public UpdateUserRequest() {
-    }
+    public UpdateUserRequest() {}
 
     public String getLoginKey() {
         return loginKey;

@@ -21,6 +21,77 @@ public class ProductRepository {
         this.jdbc = jdbc;
     }
 
+    public long addProduct(Product product) {
+        String sql = """
+                INSERT INTO products (type, product_name, developer, company, release_date, platform, stock, price)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        jdbc.update(sql,
+                product.getType().name(),
+                product.getName(),
+                product.getDeveloper(),
+                product.getCompany(),
+                product.getReleaseDate(),
+                product.getPlatform(),
+                product.getStock(),
+                product.getPrice()
+        );
+
+        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    public List<Product> listProducts() {
+        String sql = """
+                SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price
+                FROM products
+                """;
+
+        return jdbc.query(sql, PRODUCT_ROW_MAPPER);
+    }
+
+    public Optional<Product> findProduct(Long userId){
+        String sql = """
+                SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price
+                FROM products WHERE product_id = ?
+                """;
+
+        List<Product> products = jdbc.query(sql, PRODUCT_ROW_MAPPER, userId);
+
+        if(products.isEmpty()){
+            return Optional.empty();
+        }
+
+        return Optional.of(products.get(0));
+    }
+
+    public void updateProduct(Product product){
+        String sql = """
+                UPDATE products
+                SET product_name = ?, developer = ?, company = ?,
+                release_date = ?, platform = ?, price = ?, stock = ?
+                WHERE product_id = ?
+                """;
+
+        jdbc.update(sql,
+                product.getName(),
+                product.getDeveloper(),
+                product.getCompany(),
+                product.getReleaseDate(),
+                product.getPlatform(),
+                product.getPrice(),
+                product.getStock(),
+                product.getProductId()
+        );
+    }
+
+    public void deleteProduct(Long userId){
+        String sql = """
+                DELETE FROM products WHERE product_id = ?
+                """;
+        jdbc.update(sql, userId);
+    }
+
     private static final RowMapper<Product> PRODUCT_ROW_MAPPER = (rs, rowNum) -> {
 
         long id = rs.getLong("product_id");
@@ -38,75 +109,4 @@ public class ProductRepository {
 
         return new Product(id, type, name, developer, company, releaseDate, platform, stock, price);
     };
-
-    public List<Product> listAll() {
-        String sql = """
-                SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price
-                FROM products
-                """;
-
-        return jdbc.query(sql, PRODUCT_ROW_MAPPER);
-    }
-
-    public long insert(Product p) {
-        String sql = """
-                INSERT INTO products (type, product_name, developer, company, release_date, platform, stock, price)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """;
-
-        jdbc.update(sql,
-                p.getType().name(),
-                p.getName(),
-                p.getDeveloper(),
-                p.getCompany(),
-                p.getReleaseDate(),
-                p.getPlatform(),
-                p.getStock(),
-                p.getPrice()
-        );
-
-        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
-    }
-
-    public void update(Product p){
-        String sql = """
-                UPDATE products
-                SET product_name = ?, developer = ?, company = ?,
-                release_date = ?, platform = ?, price = ?, stock = ?
-                WHERE product_id = ?
-                """;
-
-        jdbc.update(sql,
-                p.getName(),
-                p.getDeveloper(),
-                p.getCompany(),
-                p.getReleaseDate(),
-                p.getPlatform(),
-                p.getPrice(),
-                p.getStock(),
-                p.getProductId()
-        );
-    }
-
-    public void delete(Long id){
-        String sql = """
-                DELETE FROM products WHERE product_id = ?
-                """;
-        jdbc.update(sql, id);
-    }
-
-    public Optional<Product> findById(Long id){
-        String sql = """
-                SELECT product_id, type, product_name, developer, company, release_date, platform, stock, price
-                FROM products WHERE product_id = ?
-                """;
-
-        List<Product> products = jdbc.query(sql, PRODUCT_ROW_MAPPER, id);
-
-        if(products.isEmpty()){
-            return Optional.empty();
-        }
-
-        return Optional.of(products.get(0));
-    }
 }

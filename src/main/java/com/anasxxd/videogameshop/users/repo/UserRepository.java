@@ -29,7 +29,24 @@ public class UserRepository {
         return new User(id, userRole, key, name, passHash, email);
     };
 
-    public List<User> listAllUsers() {
+    public Long addUser(User user) {
+        String sql = """
+                INSERT INTO users(user_role, login_key, user_name, email, password_hash)
+                VALUES(?,?,?,?,?)
+                """;
+
+        jdbc.update(sql,
+                user.getRole().name(),
+                user.getLoginKey(),
+                user.getName(),
+                user.getEmail(),
+                user.getPassword()
+        );
+
+        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+    }
+
+    public List<User> listUsers() {
         String sql = """
                 SELECT user_id, user_role, login_key, user_name, email, password_hash
                 FROM users
@@ -38,14 +55,14 @@ public class UserRepository {
         return jdbc.query(sql, USER_ROW_MAPPER);
     }
 
-    public Optional<User> findUser(Long id){
+    public Optional<User> findUser(Long userId){
         String sql = """
                 SELECT user_id, user_role, login_key, user_name, email, password_hash
                 FROM users 
                 WHERE user_id = ?
                 """;
 
-        List<User> users = jdbc.query(sql, USER_ROW_MAPPER, id);
+        List<User> users = jdbc.query(sql, USER_ROW_MAPPER, userId);
 
         if (users.isEmpty()){
             return Optional.empty();
@@ -54,24 +71,7 @@ public class UserRepository {
         return Optional.of(users.get(0));
     }
 
-    public Long insert(User u) {
-        String sql = """
-                INSERT INTO users(user_role, login_key, user_name, email, password_hash)
-                VALUES(?,?,?,?,?)
-                """;
-
-        jdbc.update(sql,
-                u.getRole().name(),
-                u.getLoginKey(),
-                u.getName(),
-                u.getEmail(),
-                u.getPassword()
-        );
-
-        return jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
-    }
-
-    public void update(User user){
+    public void updateUser(User user){
         String sql = """
                 UPDATE users
                 SET login_key = ?, user_name = ?, email = ?, password_hash = ?
@@ -87,10 +87,10 @@ public class UserRepository {
         );
     }
 
-    public void delete(Long id){
+    public void deleteUser(Long userId){
         String sql = """
                 DELETE FROM users WHERE user_id = ?
                 """;
-        jdbc.update(sql, id);
+        jdbc.update(sql, userId);
     }
 }

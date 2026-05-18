@@ -1,6 +1,6 @@
 package com.anasxxd.videogameshop.products;
 
-import com.anasxxd.videogameshop.products.dto.CreateProductRequest;
+import com.anasxxd.videogameshop.products.dto.AddProductRequest;
 import com.anasxxd.videogameshop.products.dto.ProductResponse;
 import com.anasxxd.videogameshop.products.dto.UpdateProductRequest;
 import com.anasxxd.videogameshop.products.service.ProductService;
@@ -19,31 +19,31 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PostMapping()
+    public ProductResponse addProduct(@Valid @RequestBody AddProductRequest request) {
+        return productService.addProduct(request);
+    }
+
     @GetMapping()
     public List<ProductResponse> listProducts() {
-        return productService.listAll();
+        return productService.listProducts();
     }
 
-    @GetMapping("/{id}")
-    public ProductResponse getById(@PathVariable Long id){
-        return productService.getById(id);
+    @GetMapping("/{productId}")
+    public ProductResponse getProduct(@PathVariable Long productId){
+        return productService.getProduct(productId);
     }
 
-    @PostMapping()
-    public ProductResponse createProduct(@Valid @RequestBody CreateProductRequest request) {
-        return productService.create(request);
-    }
-
-    @PatchMapping("/{id}")
+    @PatchMapping("/{productId}")
     public ProductResponse updateProduct(
-            @PathVariable Long id,
+            @PathVariable Long productId,
             @Valid @RequestBody UpdateProductRequest request
             ) {
-        return productService.update(id, request);
+        return productService.updateProduct(productId, request);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteProduct(@PathVariable Long id){
-        productService.delete(id);
+    @DeleteMapping("/{productId}")
+    public void deleteProduct(@PathVariable Long productId){
+        productService.deleteProduct(productId);
     }
 }

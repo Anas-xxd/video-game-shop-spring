@@ -24,14 +24,14 @@ public class CartController {
     ){
         return cartService.upsertItem(userId, request);
     }
-
+    //Change
     @GetMapping()
-    public CartResponse getCart(@PathVariable Long userId){
+    public CartResponse listCart(@PathVariable Long userId){
         return cartService.getCart(userId);
     }
 
     @GetMapping("/items/{productId}")
-    public CartItemResponse getCartItemById(
+    public CartItemResponse getCartItem(
             @PathVariable Long userId,
             @PathVariable Long productId
     ){
@@ -47,15 +47,15 @@ public class CartController {
         cartService.updateCartItem(userId, productId, request);
     }
 
+    @DeleteMapping()
+    public void deleteCart(@PathVariable Long userId){
+        cartService.deleteCart(userId);
+    }
+
     @DeleteMapping("/items/{productId}")
     public void deleteCartItem(
             @PathVariable Long userId,
             @PathVariable Long productId){
         cartService.deleteCartItem(userId, productId);
-    }
-
-    @DeleteMapping()
-    public void deleteCart(@PathVariable Long userId){
-        cartService.deleteCart(userId);
     }
 }

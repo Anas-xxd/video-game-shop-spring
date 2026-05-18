@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class CreateProductRequest {
+public class AddProductRequest {
 
     @NotNull
     @NotBlank
@@ -35,7 +35,7 @@ public class CreateProductRequest {
     @PositiveOrZero
     private BigDecimal price;
 
-    public CreateProductRequest() {
+    public AddProductRequest() {
     }
 
     public String getType() {

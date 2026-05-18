@@ -1,6 +1,6 @@
 package com.anasxxd.videogameshop.users;
 
-import com.anasxxd.videogameshop.users.dto.CreateUserRequest;
+import com.anasxxd.videogameshop.users.dto.AddUserRequest;
 import com.anasxxd.videogameshop.users.dto.UpdateUserRequest;
 import com.anasxxd.videogameshop.users.dto.UserResponse;
 import com.anasxxd.videogameshop.users.service.UserService;
@@ -19,31 +19,31 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PostMapping()
+    public UserResponse addUser(@Valid @RequestBody AddUserRequest request) {
+        return userService.addUser(request);
+    }
+
     @GetMapping()
     public List<UserResponse> listUsers() {
         return userService.listUsers();
     }
 
-    @GetMapping("/{id}")
-    public UserResponse getById(@PathVariable Long id){
-        return userService.getUserById(id);
+    @GetMapping("/{userId}")
+    public UserResponse getUser(@PathVariable Long userId){
+        return userService.getUser(userId);
     }
 
-    @PostMapping()
-    public UserResponse creatUser(@Valid @RequestBody CreateUserRequest request) {
-        return userService.create(request);
-    }
-
-    @PatchMapping("/{id}")
+    @PatchMapping("/{userId}")
     public UserResponse updateUser(
-            @PathVariable Long id,
+            @PathVariable Long userId,
             @Valid @RequestBody UpdateUserRequest request
             ){
-        return userService.update(id, request);
+        return userService.updateUser(userId, request);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id){
-        userService.delete(id);
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Long userId){
+        userService.deleteUser(userId);
     }
 }

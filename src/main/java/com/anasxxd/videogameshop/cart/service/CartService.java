@@ -110,6 +110,8 @@ public class CartService {
 
 
     private void validateCartItem(CartItem cartItem){
-
+        if (cartItem.getQuantity() <= 0){
+            throw new IllegalArgumentException("Quantity can not be less than 1");
+        }
     }
 }

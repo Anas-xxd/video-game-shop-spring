@@ -4,7 +4,7 @@ import com.anasxxd.videogameshop.users.UserRole;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public class CreateUserRequest {
+public class AddUserRequest {
 
     @NotNull
     private UserRole userRole;
@@ -23,7 +23,7 @@ public class CreateUserRequest {
 
     private String email;
 
-    public CreateUserRequest() {
+    public AddUserRequest() {
     }
 
     public UserRole getUserRole() {

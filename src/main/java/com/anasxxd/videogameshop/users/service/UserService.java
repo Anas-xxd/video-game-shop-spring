@@ -2,14 +2,13 @@ package com.anasxxd.videogameshop.users.service;
 
 import com.anasxxd.videogameshop.users.User;
 import com.anasxxd.videogameshop.users.UserRole;
-import com.anasxxd.videogameshop.users.dto.CreateUserRequest;
+import com.anasxxd.videogameshop.users.dto.AddUserRequest;
 import com.anasxxd.videogameshop.users.dto.UpdateUserRequest;
 import com.anasxxd.videogameshop.users.dto.UserResponse;
 import com.anasxxd.videogameshop.users.repo.UserRepository;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,21 +22,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<UserResponse> listUsers() {
-        List<UserResponse> users = new ArrayList<>();
-
-        for (User user : userRepository.listAllUsers()){
-            users.add(getUserResponse(user));
-        }
-
-        return users;
-    }
-
-    public UserResponse getUserById(Long id){
-        return getUserResponse(findUserOrThrow(id));
-    }
-
-    public UserResponse create(CreateUserRequest request) {
+    public UserResponse addUser(AddUserRequest request) {
         UserRole role = request.getUserRole();
         String loginName = request.getLoginKey();
         String name = request.getName();
@@ -45,28 +30,30 @@ public class UserService {
         String email = request.getEmail();
 
         User user = new User(null, role, loginName, name, password, email);
-        userValidate(user);
+        validateUser(user);
 
-        Long newId = userRepository.insert(user);
-        user.setUserID(newId);
+        Long newUserId = userRepository.addUser(user);
+        user.setUserID(newUserId);
 
         return getUserResponse(user);
     }
 
-    private static @NonNull UserResponse getUserResponse(User user) {
-        UserResponse response = new UserResponse();
+    public List<UserResponse> listUsers() {
+        List<UserResponse> users = new ArrayList<>();
 
-        response.setId(user.getUserID());
-        response.setUserRole(user.getRole().name());
-        response.setLoginKey(user.getLoginKey());
-        response.setName(user.getName());
-        response.setEmail(user.getEmail());
+        for (User user : userRepository.listUsers()){
+            users.add(getUserResponse(user));
+        }
 
-        return response;
+        return users;
     }
 
-    public UserResponse update(Long id, UpdateUserRequest request){
-        User user = findUserOrThrow(id);
+    public UserResponse getUser(Long userId){
+        return getUserResponse(findUserOrThrow(userId));
+    }
+
+    public UserResponse updateUser(Long userId, UpdateUserRequest request){
+        User user = findUserOrThrow(userId);
 
         if (request.getLoginKey() != null){
             user.setLoginKey(request.getLoginKey());
@@ -84,55 +71,67 @@ public class UserService {
             user.setEmail(request.getEmail());
         }
 
-        userValidate(user);
-        userRepository.update(user);
+        validateUser(user);
+        userRepository.updateUser(user);
         return getUserResponse(user);
     }
 
-    public void delete(Long id){
-        findUserOrThrow(id);
-        userRepository.delete(id);
+    public void deleteUser(Long userId){
+        findUserOrThrow(userId);
+        userRepository.deleteUser(userId);
     }
 
-    private User findUserOrThrow(Long id){
-        Optional<User> optionalUser = userRepository.findUser(id);
+    private static @NonNull UserResponse getUserResponse(User user) {
+        UserResponse response = new UserResponse();
+
+        response.setId(user.getUserID());
+        response.setUserRole(user.getRole().name());
+        response.setLoginKey(user.getLoginKey());
+        response.setName(user.getName());
+        response.setEmail(user.getEmail());
+
+        return response;
+    }
+
+    private User findUserOrThrow(Long userId){
+        Optional<User> optionalUser = userRepository.findUser(userId);
 
         if (optionalUser.isPresent()){
             return optionalUser.get();
         }
 
-        throw new IllegalArgumentException("The user with the id: " + id + " does not exist.");
+        throw new IllegalArgumentException("The user with the id: " + userId + " does not exist.");
     }
 
-    private void userValidate(User u) {
-        if (u.getRole() == null) {
+    private void validateUser(User user) {
+        if (user.getRole() == null) {
             throw new IllegalArgumentException("User role is required");
         }
 
-        if (u.getLoginKey() == null || u.getLoginKey().isBlank()) {
+        if (user.getLoginKey() == null || user.getLoginKey().isBlank()) {
             throw new IllegalArgumentException("User login key is required");
         }
 
-        if (u.getName() == null || u.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank()) {
             throw new IllegalArgumentException("User name is required");
         }
 
-        if (u.getPassword() == null || u.getPassword().isBlank()) {
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
             throw new IllegalArgumentException("User password is required");
         }
 
-        switch (u.getRole()) {
+        switch (user.getRole()) {
             case ADMIN -> {
 
             }
 
             case CUSTOMER -> {
-                if (u.getEmail() == null || u.getEmail().isBlank()) {
+                if (user.getEmail() == null || user.getEmail().isBlank()) {
                     throw new IllegalArgumentException("User email is required");
                 }
             }
 
-            default -> throw new IllegalArgumentException("Unknown User type: " + u.getRole());
+            default -> throw new IllegalArgumentException("Unknown User type: " + user.getRole());
         }
     }
 }

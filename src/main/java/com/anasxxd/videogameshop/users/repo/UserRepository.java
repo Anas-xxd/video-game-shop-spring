@@ -18,17 +18,6 @@ public class UserRepository {
         this.jdbc = jdbc;
     }
 
-    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> {
-        Long id = rs.getLong("user_id");
-        UserRole userRole = UserRole.valueOf(rs.getString("user_role"));
-        String key = rs.getString("login_key");
-        String name = rs.getString("user_name");
-        String email = rs.getString("email");
-        String passHash = rs.getString("password_hash");
-
-        return new User(id, userRole, key, name, passHash, email);
-    };
-
     public Long addUser(User user) {
         String sql = """
                 INSERT INTO users(user_role, login_key, user_name, email, password_hash)
@@ -58,7 +47,7 @@ public class UserRepository {
     public Optional<User> findUser(Long userId){
         String sql = """
                 SELECT user_id, user_role, login_key, user_name, email, password_hash
-                FROM users 
+                FROM users
                 WHERE user_id = ?
                 """;
 
@@ -93,4 +82,15 @@ public class UserRepository {
                 """;
         jdbc.update(sql, userId);
     }
+
+    private static final RowMapper<User> USER_ROW_MAPPER = (rs, rowNum) -> {
+        Long id = rs.getLong("user_id");
+        UserRole userRole = UserRole.valueOf(rs.getString("user_role"));
+        String key = rs.getString("login_key");
+        String name = rs.getString("user_name");
+        String email = rs.getString("email");
+        String passHash = rs.getString("password_hash");
+
+        return new User(id, userRole, key, name, passHash, email);
+    };
 }

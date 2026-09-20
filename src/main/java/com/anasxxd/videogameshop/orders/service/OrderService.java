@@ -21,7 +21,6 @@ public class OrderService {
 
     @Transactional
     public OrderResponse checkOut(Long userId){
-        cartService.
     }
 
 }
